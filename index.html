@@ -1,0 +1,400 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDGsシステム — 製品カタログ グループ２</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700;900&family=Outfit:wght@300;700;900&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
+:root {
+  --green1: #1a6b3a;
+  --green2: #2d9954;
+  --green3: #4cba72;
+  --green4: #a8e4bc;
+  --green5: #e8f7ee;
+  --dark: #0f1f14;
+  --text: #1a2e1f;
+  --text2: #4a6653;
+  --white: #ffffff;
+  --cream: #f9fdf9;
+}
+body { font-family: 'Noto Sans JP', sans-serif; background: var(--white); color: var(--text); line-height: 1.7; }
+
+.hero { position:relative; min-height:100vh; background:var(--dark); display:flex; flex-direction:column; justify-content:center; overflow:hidden; padding:60px; }
+.hero-bg { position:absolute; inset:0; background: radial-gradient(ellipse 70% 60% at 80% 50%, rgba(45,153,84,0.25) 0%, transparent 70%), radial-gradient(ellipse 40% 40% at 20% 80%, rgba(76,186,114,0.1) 0%, transparent 60%); }
+.hero-grid { position:absolute; inset:0; background-image: linear-gradient(rgba(76,186,114,0.06) 1px, transparent 1px), linear-gradient(90deg, rgba(76,186,114,0.06) 1px, transparent 1px); background-size:50px 50px; }
+.hero-content { position:relative; z-index:2; max-width:700px; }
+.hero-tag { display:inline-flex; align-items:center; gap:8px; background:rgba(76,186,114,0.15); border:1px solid rgba(76,186,114,0.4); border-radius:100px; padding:6px 18px; font-size:12px; color:var(--green3); letter-spacing:0.1em; font-family:'JetBrains Mono',monospace; margin-bottom:28px; }
+.hero-tag::before { content:''; width:6px; height:6px; background:var(--green3); border-radius:50%; animation:blink 2s infinite; }
+@keyframes blink { 0%,100%{opacity:1;} 50%{opacity:0.3;} }
+.hero h1 { font-family:'Outfit',sans-serif; font-weight:900; font-size:clamp(52px,8vw,96px); line-height:1.0; color:var(--white); letter-spacing:-0.03em; margin-bottom:12px; }
+.hero h1 .accent { color:var(--green3); }
+.hero-sub { font-size:clamp(16px,2vw,20px); color:rgba(255,255,255,0.55); margin-bottom:40px; font-weight:300; letter-spacing:0.05em; }
+.hero-concept { background:rgba(255,255,255,0.92); border:1px solid rgba(76,186,114,0.3); border-left:3px solid var(--green3); border-radius:0 12px 12px 0; padding:20px 24px; max-width:580px; font-size:14px; color:#1a2e1f; line-height:1.8; margin-bottom:48px; }
+.hero-badges { display:flex; gap:12px; flex-wrap:wrap; }
+.badge { display:inline-flex; align-items:center; gap:6px; background:rgba(76,186,114,0.12); border:1px solid rgba(76,186,114,0.3); border-radius:8px; padding:8px 16px; font-size:13px; color:var(--green4); font-weight:500; }
+.hero-img-area { position:absolute; right:60px; top:50%; transform:translateY(-50%); width:380px; z-index:2; }
+.hero-img-area img { width:100%; border-radius:16px; border:1px solid rgba(76,186,114,0.2); box-shadow:0 40px 80px rgba(0,0,0,0.5); }
+.hero-group { position:absolute; bottom:40px; left:60px; z-index:2; text-align:left; }
+.hero-group .g-name { font-family:'Outfit',sans-serif; font-size:28px; font-weight:700; color:var(--green3); }
+.hero-group .g-date { font-size:12px; color:rgba(255,255,255,0.4); font-family:'JetBrains Mono',monospace; }
+
+section { padding:100px 60px; }
+section:nth-child(odd) { background:var(--white); }
+section:nth-child(even) { background:var(--cream); }
+.section-label { display:inline-flex; align-items:center; gap:8px; font-family:'JetBrains Mono',monospace; font-size:11px; color:var(--green2); letter-spacing:0.12em; text-transform:uppercase; margin-bottom:12px; }
+.section-label::before { content:''; display:inline-block; width:20px; height:2px; background:var(--green2); }
+h2 { font-family:'Outfit',sans-serif; font-weight:900; font-size:clamp(32px,5vw,56px); line-height:1.1; color:var(--dark); letter-spacing:-0.02em; margin-bottom:16px; }
+h2 .g { color:var(--green2); }
+.section-desc { font-size:16px; color:var(--text2); max-width:600px; margin-bottom:56px; line-height:1.8; }
+
+.features-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:24px; }
+.feature-card { background:var(--white); border:1px solid #e0ede5; border-radius:16px; padding:32px; transition:transform 0.2s,box-shadow 0.2s,border-color 0.2s; position:relative; overflow:hidden; }
+.feature-card::before { content:''; position:absolute; top:0;left:0;right:0; height:3px; background:linear-gradient(90deg,var(--green2),var(--green3)); transform:scaleX(0); transform-origin:left; transition:transform 0.3s; }
+.feature-card:hover { transform:translateY(-4px); box-shadow:0 20px 40px rgba(26,107,58,0.1); border-color:var(--green3); }
+.feature-card:hover::before { transform:scaleX(1); }
+.feature-icon { font-size:36px; margin-bottom:16px; }
+.feature-card h3 { font-family:'Outfit',sans-serif; font-weight:700; font-size:18px; color:var(--dark); margin-bottom:10px; }
+.feature-card p { font-size:13.5px; color:var(--text2); line-height:1.7; }
+
+.screen-showcase { display:grid; grid-template-columns:1fr 1fr; gap:32px; align-items:start; }
+.screen-item { background:var(--white); border:1px solid #e0ede5; border-radius:16px; overflow:hidden; transition:transform 0.2s,box-shadow 0.2s; }
+.screen-item:hover { transform:translateY(-4px); box-shadow:0 24px 48px rgba(26,107,58,0.12); }
+.screen-item img { width:100%; display:block; border-bottom:1px solid #e0ede5; }
+.screen-item-info { padding:20px 24px; }
+.screen-item-info h3 { font-family:'Outfit',sans-serif; font-weight:700; font-size:16px; color:var(--dark); margin-bottom:6px; }
+.screen-item-info p { font-size:13px; color:var(--text2); line-height:1.6; }
+.screen-tag { display:inline-block; background:var(--green5); color:var(--green1); font-size:11px; padding:3px 10px; border-radius:100px; font-family:'JetBrains Mono',monospace; margin-bottom:8px; font-weight:600; }
+
+.hw-layout { display:grid; grid-template-columns:1fr 1fr; gap:60px; align-items:center; }
+.hw-img { border-radius:20px; overflow:hidden; box-shadow:0 40px 80px rgba(26,107,58,0.15); }
+.hw-img img { width:100%; display:block; }
+.hw-specs { display:flex; flex-direction:column; gap:20px; }
+.spec-item { display:flex; gap:16px; padding:20px; background:var(--white); border:1px solid #e0ede5; border-radius:12px; }
+.spec-icon { width:44px; height:44px; background:var(--green5); border-radius:10px; display:flex; align-items:center; justify-content:center; font-size:20px; flex-shrink:0; }
+.spec-info h4 { font-weight:700; font-size:14px; color:var(--dark); margin-bottom:4px; }
+.spec-info p { font-size:12.5px; color:var(--text2); line-height:1.6; }
+
+/* Android section - login + 2 screens side by side */
+.android-layout { display:grid; grid-template-columns:1fr 2fr; gap:48px; align-items:center; }
+.android-single { display:flex; flex-direction:column; align-items:center; }
+.android-pair { display:grid; grid-template-columns:1fr 1fr; gap:24px; }
+.android-frame { background:var(--dark); border-radius:32px; padding:8px; box-shadow:0 24px 48px rgba(0,0,0,0.3); }
+.android-frame img { width:100%; border-radius:26px; display:block; }
+.android-label { text-align:center; margin-top:16px; font-size:13px; color:var(--text2); font-weight:500; }
+
+/* Teacher android - wide image */
+.teacher-android-img { border-radius:12px; overflow:hidden; border:1px solid #e0ede5; box-shadow:0 16px 32px rgba(26,107,58,0.1); }
+.teacher-android-img img { width:100%; display:block; }
+
+.perf-grid { display:grid; grid-template-columns:repeat(3,1fr); gap:20px; }
+.perf-card { background:var(--white); border:1px solid #e0ede5; border-radius:16px; padding:28px; text-align:center; }
+.perf-value { font-family:'Outfit',sans-serif; font-weight:900; font-size:52px; color:var(--green2); line-height:1; margin-bottom:6px; }
+.perf-value.orange { color:#e87a20; }
+.perf-value.yellow { color:#c9a518; }
+.perf-label { font-size:13px; color:var(--text2); margin-bottom:8px; }
+.perf-bar { height:4px; background:#e0ede5; border-radius:2px; overflow:hidden; margin-top:12px; }
+.perf-fill { height:100%; background:linear-gradient(90deg,var(--green2),var(--green3)); border-radius:2px; }
+.perf-fill.orange { background:linear-gradient(90deg,#e8891f,#f0a84a); }
+.perf-fill.yellow { background:linear-gradient(90deg,#c9a518,#e0c135); }
+
+footer { background:var(--dark); padding:60px; display:flex; justify-content:space-between; align-items:center; flex-wrap:wrap; gap:24px; }
+.footer-title { font-family:'Outfit',sans-serif; font-weight:900; font-size:28px; color:var(--white); }
+.footer-title span { color:var(--green3); }
+.footer-info { text-align:right; font-size:13px; color:rgba(255,255,255,0.4); line-height:1.8; font-family:'JetBrains Mono',monospace; }
+
+@media(max-width:900px){
+  section{padding:60px 24px;}
+  .hero{padding:40px 24px;min-height:auto;padding-bottom:80px;}
+  .hero-img-area{display:none;}
+  .features-grid,.perf-grid{grid-template-columns:1fr;}
+  .screen-showcase,.hw-layout,.android-layout{grid-template-columns:1fr;}
+  .android-pair{grid-template-columns:1fr 1fr;}
+  footer{padding:40px 24px;flex-direction:column;text-align:center;}
+  .footer-info{text-align:center;}
+}
+</style>
+</head>
+<body>
+
+<!-- HERO -->
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grid"></div>
+  <div class="hero-content">
+    <div class="hero-tag">SDGs SYSTEM — GROUP 2</div>
+    <h1>SDGs<br><span class="accent">システム</span></h1>
+    <div class="hero-sub">教室環境モニタリング & 出席管理システム</div>
+    <div class="hero-concept">
+      SDGs目標7ではエネルギー効率の改善が求められている。誰もいない部屋の電気がついていたり、必要以上にエアコンが稼働しているといった無駄をなくすため、教室の環境をリアルタイムで監視し、出席管理と一体化したシステムを開発した。
+    </div>
+    <div class="hero-badges">
+      <span class="badge">🌡️ 温湿度モニタリング</span>
+      <span class="badge">💡 照度センシング</span>
+      <span class="badge">📱 出席管理</span>
+      <span class="badge">🌐 Webダッシュボード</span>
+    </div>
+  </div>
+  <div class="hero-img-area">
+    <img src="images/iot.png" alt="IoT機器">
+  </div>
+  <div class="hero-group">
+    <div class="g-name">グループ２</div>
+    <div class="g-date">令和7年度 / 関東職業能力開発大学校</div>
+  </div>
+</section>
+
+<!-- FEATURES -->
+<section>
+  <div class="section-label">FEATURES</div>
+  <h2>主な<span class="g">機能</span></h2>
+  <p class="section-desc">IoT・Web・Androidを組み合わせた3プラットフォーム構成で、教室環境の見える化と出席管理を実現。</p>
+  <div class="features-grid">
+    <div class="feature-card">
+      <div class="feature-icon">🌡️</div>
+      <h3>環境リアルタイム監視</h3>
+      <p>温度・湿度・照度をArduino UNO R4で1分単位で計測し、Webサーバへ自動送信。教室の環境状態をリアルタイムで可視化する。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📊</div>
+      <h3>Webダッシュボード</h3>
+      <p>全教室のフロアマップ上に環境状態を表示。照明ON/OFFの判定や消し忘れ警告、週間グラフによる履歴閲覧が可能。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">✅</div>
+      <h3>出席管理（QRコード）</h3>
+      <p>生徒はスマートフォンでQRコードを提示。教員用Androidアプリで読み取り、入室・退室を自動記録する。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🔋</div>
+      <h3>エコ率の算出</h3>
+      <p>照明がOFFの時間帯における暖房稼働割合を「エコ率」として算出。省エネ行動の可視化でSDGs目標7に貢献。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">📱</div>
+      <h3>教員用Androidアプリ</h3>
+      <p>科目・日付選択からQR読み取り、出席一覧表示まで一元管理。カメラ権限チェックや出席状況の色分け表示に対応。</p>
+    </div>
+    <div class="feature-card">
+      <div class="feature-icon">🗄️</div>
+      <h3>データベース管理</h3>
+      <p>学科・学生・教師・授業・出席記録・環境データを6テーブルで管理。PK/FK設計による整合性の高いDB構成。</p>
+    </div>
+  </div>
+</section>
+
+<!-- HARDWARE -->
+<section>
+  <div class="section-label">HARDWARE</div>
+  <h2>IoT<span class="g">機器</span></h2>
+  <p class="section-desc">Arduino UNO R4 WiFiをコアに、温湿度・照度・OLEDディスプレイを搭載したセンサユニット。</p>
+  <div class="hw-layout">
+    <div class="hw-img">
+      <img src="images/iot.png" alt="IoT機器本体">
+    </div>
+    <div class="hw-specs">
+      <div class="spec-item">
+        <div class="spec-icon">🔧</div>
+        <div class="spec-info">
+          <h4>Arduino UNO R4 WiFi（ABX00087）</h4>
+          <p>メインコントローラ。WiFi経由で1分ごとにWebサーバへデータ送信。</p>
+        </div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-icon">🌡️</div>
+        <div class="spec-info">
+          <h4>温湿度センサー DHT11</h4>
+          <p>室温・湿度を計測。デジタルポートD2に接続。</p>
+        </div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-icon">💡</div>
+        <div class="spec-info">
+          <h4>照度センサー NJL7502L</h4>
+          <p>フォトトランジスタ式。アナログポートA0で照度を取得。</p>
+        </div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-icon">🖥️</div>
+        <div class="spec-info">
+          <h4>OLEDディスプレイ SSD1306（0.96インチ）</h4>
+          <p>128×64ドット白色有機EL。取得データをリアルタイム表示。D18/D19(I2C)接続。</p>
+        </div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-icon">🔌</div>
+        <div class="spec-info">
+          <h4>カーボン抵抗 10kΩ × 2（RD25S 10K）</h4>
+          <p>センサ回路のプルアップ・プルダウン用抵抗。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- WEB SCREENS -->
+<section>
+  <div class="section-label">WEB INTERFACE</div>
+  <h2>Web<span class="g">画面構成</span></h2>
+  <p class="section-desc">ブラウザからアクセスできる環境モニタリング・出席管理の統合Webインターフェース。</p>
+  <div class="screen-showcase">
+    <div class="screen-item">
+      <img src="images/top.png" alt="TOPページ">
+      <div class="screen-item-info">
+        <span class="screen-tag">index.php</span>
+        <h3>環境モニタリング TOP</h3>
+        <p>フロアマップ上に全教室の照明・環境状態を表示。今日のエコ率もリアルタイムで確認できる。</p>
+      </div>
+    </div>
+    <div class="screen-item">
+      <img src="images/env.png" alt="環境管理画面">
+      <div class="screen-item-info">
+        <span class="screen-tag">env.php</span>
+        <h3>環境状況閲覧ページ</h3>
+        <p>各教室の過去の温度・湿度・照度データを閲覧。週間グラフをモーダルで表示する機能も搭載。</p>
+      </div>
+    </div>
+    <div class="screen-item">
+      <img src="images/teacher.png" alt="教員用ログイン">
+      <div class="screen-item-info">
+        <span class="screen-tag">teacher.php</span>
+        <h3>教員用ログインページ</h3>
+        <p>教員専用のログイン画面。認証後に出席管理・環境管理ページへアクセスできる。</p>
+      </div>
+    </div>
+    <div class="screen-item">
+      <img src="images/attend_web.png" alt="出席管理画面">
+      <div class="screen-item-info">
+        <span class="screen-tag">attend.php</span>
+        <h3>出席管理ページ</h3>
+        <p>カレンダーで日付を選択し、授業ごとの出席状況を一覧表示。学籍番号・氏名・判定・打刻時間を確認できる。</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ANDROID -->
+<section>
+  <div class="section-label">ANDROID APP</div>
+  <h2>Android<span class="g">アプリ</span></h2>
+  <p class="section-desc">生徒用・教員用の2種類のAndroidアプリで出席管理を完結。QRコードで簡単・確実に記録。</p>
+
+  <!-- 生徒用 -->
+  <div style="margin-bottom:16px;">
+    <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;color:var(--text2);margin-bottom:32px;">📱 生徒用アプリ</h3>
+  </div>
+  <div class="android-layout" style="margin-bottom:64px;">
+    <div class="android-single">
+      <div class="android-frame">
+        <img src="images/login.png" alt="ログイン画面">
+      </div>
+      <div class="android-label">ログイン画面</div>
+    </div>
+    <div class="android-pair">
+      <div>
+        <div class="android-frame">
+          <img src="images/qr_screen.png" alt="QR表示画面">
+        </div>
+        <div class="android-label">出席QR表示画面</div>
+      </div>
+      <div style="display:flex;flex-direction:column;justify-content:center;padding:16px;">
+        <div style="background:var(--green5);border-left:3px solid var(--green2);border-radius:0 12px 12px 0;padding:20px 20px;">
+          <div style="font-weight:700;font-size:14px;color:var(--dark);margin-bottom:8px;">🔐 ログイン</div>
+          <p style="font-size:13px;color:var(--text2);line-height:1.7;margin-bottom:16px;">学籍番号とパスワードでログイン後、QRコードを自動生成。</p>
+          <div style="font-weight:700;font-size:14px;color:var(--dark);margin-bottom:8px;">📲 QR提示</div>
+          <p style="font-size:13px;color:var(--text2);line-height:1.7;">表示されたQRコードを教員用タブレットにかざして出席登録完了。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- 教員用 -->
+  <div style="margin-bottom:32px;">
+    <h3 style="font-family:'Outfit',sans-serif;font-weight:700;font-size:18px;color:var(--text2);margin-bottom:32px;">🖥️ 教員用アプリ（タブレット）</h3>
+  </div>
+  <div class="hw-layout">
+    <div class="teacher-android-img">
+      <img src="images/teacher_android.png" alt="教員用出席一覧">
+    </div>
+    <div class="hw-specs">
+      <div class="spec-item">
+        <div class="spec-icon">📷</div>
+        <div class="spec-info">
+          <h4>QRコード読み取り</h4>
+          <p>生徒のスマートフォンに表示されたQRコードをカメラで読み取り、出席を自動登録する。</p>
+        </div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-icon">📋</div>
+        <div class="spec-info">
+          <h4>出席一覧表示</h4>
+          <p>学籍番号・氏名・出欠判定・時間をリアルタイムで一覧表示。遅刻・欠席は色分けで視覚的に確認できる。</p>
+        </div>
+      </div>
+      <div class="spec-item">
+        <div class="spec-icon">📅</div>
+        <div class="spec-info">
+          <h4>科目・日付選択</h4>
+          <p>科目と日付を選択して出席管理を開始。授業ごとの出席データを個別に管理できる。</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- PERFORMANCE -->
+<section>
+  <div class="section-label">PERFORMANCE</div>
+  <h2>性能<span class="g">評価</span></h2>
+  <p class="section-desc">各機能の達成率を評価。主要機能はほぼ100%を達成し、安定した動作を実現した。</p>
+  <div class="perf-grid">
+    <div class="perf-card">
+      <div class="perf-value">100<span style="font-size:24px;">%</span></div>
+      <div class="perf-label">Webページ表示<br>環境データ取得・表示</div>
+      <div class="perf-bar"><div class="perf-fill" style="width:100%"></div></div>
+    </div>
+    <div class="perf-card">
+      <div class="perf-value">100<span style="font-size:24px;">%</span></div>
+      <div class="perf-label">出席登録<br>（QRコード読み取り）</div>
+      <div class="perf-bar"><div class="perf-fill" style="width:100%"></div></div>
+    </div>
+    <div class="perf-card">
+      <div class="perf-value">100<span style="font-size:24px;">%</span></div>
+      <div class="perf-label">データベース<br>保存・取得</div>
+      <div class="perf-bar"><div class="perf-fill" style="width:100%"></div></div>
+    </div>
+    <div class="perf-card">
+      <div class="perf-value orange">90<span style="font-size:24px;">%</span></div>
+      <div class="perf-label">照度による<br>環境判定</div>
+      <div class="perf-bar"><div class="perf-fill orange" style="width:90%"></div></div>
+    </div>
+    <div class="perf-card">
+      <div class="perf-value yellow">70<span style="font-size:24px;">%</span></div>
+      <div class="perf-label">エコ率計算<br>（一部条件あり）</div>
+      <div class="perf-bar"><div class="perf-fill yellow" style="width:70%"></div></div>
+    </div>
+    <div class="perf-card">
+      <div class="perf-value orange">80<span style="font-size:24px;">%</span></div>
+      <div class="perf-label">週間グラフ<br>表示機能</div>
+      <div class="perf-bar"><div class="perf-fill orange" style="width:80%"></div></div>
+    </div>
+  </div>
+</section>
+
+<!-- FOOTER -->
+<footer>
+  <div>
+    <div class="footer-title">SDGs<span>システム</span></div>
+    <div style="font-size:13px;color:rgba(255,255,255,0.4);margin-top:6px;font-family:'JetBrains Mono',monospace;">教室環境モニタリング & 出席管理</div>
+  </div>
+  <div class="footer-info">
+    関東職業能力開発大学校<br>
+    生産電子情報システム技術科<br>
+    R07年度 標準課題実習<br>
+    <span style="color:rgba(255,255,255,0.7);font-weight:600;">グループ２</span>
+  </div>
+</footer>
+
+</body>
+</html>
