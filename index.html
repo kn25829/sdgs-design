@@ -1,0 +1,1192 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>SDGsシステム 詳細設計書 — グループC</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@300;400;500;700&family=JetBrains+Mono:wght@400;600&family=Outfit:wght@300;600;800&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg: #0a0f1e;
+    --bg2: #0f1729;
+    --bg3: #141e35;
+    --card: #111827;
+    --border: rgba(99,179,237,0.15);
+    --accent1: #38bdf8;
+    --accent2: #34d399;
+    --accent3: #f59e0b;
+    --accent4: #a78bfa;
+    --text: #e2e8f0;
+    --text2: #94a3b8;
+    --text3: #64748b;
+    --pk: #f87171;
+    --fk: #fbbf24;
+    --sdg-green: #22c55e;
+    --sdg-blue: #3b82f6;
+  }
+
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  body {
+    font-family: 'Noto Sans JP', sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    line-height: 1.7;
+    overflow-x: hidden;
+  }
+
+  /* ─── ANIMATED BACKGROUND ─── */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background:
+      radial-gradient(ellipse 80% 50% at 20% 20%, rgba(56,189,248,0.05) 0%, transparent 60%),
+      radial-gradient(ellipse 60% 40% at 80% 80%, rgba(52,211,153,0.04) 0%, transparent 60%);
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  .grid-bg {
+    position: fixed;
+    inset: 0;
+    background-image:
+      linear-gradient(rgba(99,179,237,0.03) 1px, transparent 1px),
+      linear-gradient(90deg, rgba(99,179,237,0.03) 1px, transparent 1px);
+    background-size: 40px 40px;
+    pointer-events: none;
+    z-index: 0;
+  }
+
+  /* ─── HEADER ─── */
+  header {
+    position: relative;
+    z-index: 10;
+    padding: 60px 40px 40px;
+    border-bottom: 1px solid var(--border);
+    background: linear-gradient(180deg, rgba(15,23,41,0.95) 0%, transparent 100%);
+    display: flex;
+    align-items: flex-end;
+    gap: 40px;
+    flex-wrap: wrap;
+  }
+
+  .header-badge {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: rgba(56,189,248,0.1);
+    border: 1px solid rgba(56,189,248,0.3);
+    border-radius: 100px;
+    padding: 6px 16px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent1);
+    letter-spacing: 0.08em;
+    margin-bottom: 16px;
+  }
+
+  .header-badge::before {
+    content: '';
+    width: 6px; height: 6px;
+    background: var(--accent2);
+    border-radius: 50%;
+    animation: pulse 2s infinite;
+  }
+
+  @keyframes pulse {
+    0%, 100% { opacity: 1; transform: scale(1); }
+    50% { opacity: 0.4; transform: scale(0.8); }
+  }
+
+  h1 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 800;
+    font-size: clamp(28px, 4vw, 48px);
+    line-height: 1.1;
+    letter-spacing: -0.02em;
+  }
+
+  h1 span {
+    background: linear-gradient(135deg, var(--accent1), var(--accent2));
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+    background-clip: text;
+  }
+
+  .header-meta {
+    margin-left: auto;
+    text-align: right;
+  }
+
+  .header-meta .group {
+    font-family: 'Outfit', sans-serif;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--accent2);
+  }
+
+  .header-meta .subtitle {
+    font-size: 13px;
+    color: var(--text3);
+    font-family: 'JetBrains Mono', monospace;
+  }
+
+  /* ─── NAV ─── */
+  nav {
+    position: sticky;
+    top: 0;
+    z-index: 100;
+    background: rgba(10,15,30,0.92);
+    backdrop-filter: blur(20px);
+    border-bottom: 1px solid var(--border);
+    padding: 0 40px;
+    display: flex;
+    gap: 0;
+    overflow-x: auto;
+  }
+
+  nav a {
+    display: block;
+    padding: 14px 18px;
+    font-size: 12px;
+    font-family: 'JetBrains Mono', monospace;
+    color: var(--text3);
+    text-decoration: none;
+    white-space: nowrap;
+    border-bottom: 2px solid transparent;
+    transition: all 0.2s;
+    letter-spacing: 0.03em;
+  }
+
+  nav a:hover {
+    color: var(--accent1);
+    border-bottom-color: var(--accent1);
+  }
+
+  /* ─── MAIN LAYOUT ─── */
+  main {
+    position: relative;
+    z-index: 1;
+    max-width: 1200px;
+    margin: 0 auto;
+    padding: 40px 40px 80px;
+  }
+
+  /* ─── SECTION ─── */
+  section {
+    margin-bottom: 64px;
+    animation: fadeUp 0.5s ease both;
+  }
+
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to { opacity: 1; transform: translateY(0); }
+  }
+
+  .section-header {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 28px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--border);
+  }
+
+  .section-num {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--accent1);
+    background: rgba(56,189,248,0.08);
+    border: 1px solid rgba(56,189,248,0.2);
+    border-radius: 6px;
+    padding: 4px 10px;
+    letter-spacing: 0.06em;
+  }
+
+  h2 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 22px;
+    color: var(--text);
+  }
+
+  h3 {
+    font-family: 'Outfit', sans-serif;
+    font-weight: 600;
+    font-size: 15px;
+    color: var(--accent2);
+    margin-bottom: 14px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  }
+
+  h3::before {
+    content: '';
+    display: inline-block;
+    width: 3px;
+    height: 14px;
+    background: var(--accent2);
+    border-radius: 2px;
+  }
+
+  /* ─── CARDS / TABLES ─── */
+  .card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: border-color 0.2s;
+  }
+
+  .card:hover { border-color: rgba(56,189,248,0.3); }
+
+  table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 13.5px;
+  }
+
+  thead tr {
+    background: rgba(56,189,248,0.08);
+    border-bottom: 1px solid rgba(56,189,248,0.2);
+  }
+
+  thead th {
+    padding: 12px 16px;
+    text-align: left;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    letter-spacing: 0.08em;
+    color: var(--accent1);
+    font-weight: 600;
+    text-transform: uppercase;
+  }
+
+  tbody tr {
+    border-bottom: 1px solid rgba(255,255,255,0.04);
+    transition: background 0.15s;
+  }
+
+  tbody tr:last-child { border-bottom: none; }
+  tbody tr:hover { background: rgba(255,255,255,0.02); }
+
+  td {
+    padding: 11px 16px;
+    color: var(--text2);
+    vertical-align: top;
+  }
+
+  td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12.5px;
+    color: var(--accent3);
+  }
+
+  .badge-pk {
+    display: inline-block;
+    background: rgba(248,113,113,0.15);
+    border: 1px solid rgba(248,113,113,0.3);
+    color: var(--pk);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .badge-fk {
+    display: inline-block;
+    background: rgba(251,191,36,0.12);
+    border: 1px solid rgba(251,191,36,0.3);
+    color: var(--fk);
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 10px;
+    padding: 2px 7px;
+    border-radius: 4px;
+    font-weight: 600;
+    letter-spacing: 0.05em;
+  }
+
+  .col-filename { width: 200px; }
+  .col-action { width: 35%; }
+
+  /* ─── GRID SUBSECTIONS ─── */
+  .grid-2 {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 20px;
+  }
+
+  @media (max-width: 700px) {
+    .grid-2 { grid-template-columns: 1fr; }
+    header { padding: 40px 20px 30px; }
+    main { padding: 24px 20px 60px; }
+    nav { padding: 0 16px; }
+  }
+
+  /* ─── DB TABLE CARDS ─── */
+  .db-group { margin-bottom: 24px; }
+
+  .db-table-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--accent4);
+    background: rgba(167,139,250,0.08);
+    border: 1px solid rgba(167,139,250,0.2);
+    padding: 8px 14px;
+    border-radius: 8px 8px 0 0;
+    border-bottom: none;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+  }
+
+  .db-logical {
+    font-family: 'Noto Sans JP', sans-serif;
+    font-weight: 400;
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .db-card {
+    background: var(--card);
+    border: 1px solid rgba(167,139,250,0.2);
+    border-radius: 0 8px 8px 8px;
+    overflow: hidden;
+    margin-bottom: 16px;
+  }
+
+  .db-card table thead tr {
+    background: rgba(167,139,250,0.06);
+    border-bottom: 1px solid rgba(167,139,250,0.15);
+  }
+
+  .db-card table thead th {
+    color: var(--accent4);
+  }
+
+  .db-card td:first-child {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    color: var(--text);
+  }
+
+  /* ─── PORT TABLE ─── */
+  .port-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: rgba(52,211,153,0.1);
+    border: 1px solid rgba(52,211,153,0.25);
+    color: var(--accent2);
+    padding: 2px 8px;
+    border-radius: 4px;
+  }
+
+  /* ─── PARTS TABLE ─── */
+  .count-badge {
+    display: inline-block;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    background: rgba(245,158,11,0.1);
+    border: 1px solid rgba(245,158,11,0.25);
+    color: var(--accent3);
+    padding: 2px 8px;
+    border-radius: 4px;
+    min-width: 28px;
+    text-align: center;
+  }
+
+  /* ─── FUNC CELL ─── */
+  .func-list {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+  }
+
+  .func-item {
+    background: rgba(56,189,248,0.04);
+    border-left: 2px solid rgba(56,189,248,0.3);
+    padding: 5px 10px;
+    border-radius: 0 4px 4px 0;
+  }
+
+  .func-name {
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--accent1);
+    font-weight: 600;
+  }
+
+  .func-desc {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 2px;
+  }
+
+  /* ─── SUMMARY CARDS ─── */
+  .summary-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 16px;
+    margin-bottom: 40px;
+  }
+
+  @media (max-width: 900px) {
+    .summary-grid { grid-template-columns: repeat(2, 1fr); }
+  }
+
+  .summary-card {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 20px;
+    position: relative;
+    overflow: hidden;
+    transition: transform 0.2s, border-color 0.2s;
+  }
+
+  .summary-card:hover {
+    transform: translateY(-2px);
+    border-color: rgba(56,189,248,0.3);
+  }
+
+  .summary-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent-color, var(--accent1));
+  }
+
+  .summary-card .icon {
+    font-size: 24px;
+    margin-bottom: 10px;
+  }
+
+  .summary-card .label {
+    font-size: 11px;
+    color: var(--text3);
+    font-family: 'JetBrains Mono', monospace;
+    letter-spacing: 0.06em;
+    text-transform: uppercase;
+    margin-bottom: 4px;
+  }
+
+  .summary-card .value {
+    font-family: 'Outfit', sans-serif;
+    font-size: 26px;
+    font-weight: 700;
+    color: var(--text);
+  }
+
+  .summary-card .sub {
+    font-size: 12px;
+    color: var(--text3);
+    margin-top: 4px;
+  }
+
+  /* ─── ER DIAGRAM ─── */
+  .er-container {
+    background: var(--card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    padding: 32px;
+    overflow-x: auto;
+  }
+
+  .er-diagram {
+    display: flex;
+    gap: 32px;
+    align-items: flex-start;
+    flex-wrap: wrap;
+    min-width: 600px;
+  }
+
+  .er-group {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+  }
+
+  .er-group-label {
+    font-size: 10px;
+    color: var(--text3);
+    font-family: 'JetBrains Mono', monospace;
+    text-transform: uppercase;
+    letter-spacing: 0.1em;
+    margin-bottom: 4px;
+    text-align: center;
+  }
+
+  .er-table {
+    border: 1px solid rgba(167,139,250,0.3);
+    border-radius: 10px;
+    overflow: hidden;
+    min-width: 220px;
+    background: rgba(167,139,250,0.03);
+  }
+
+  .er-table-header {
+    background: rgba(167,139,250,0.12);
+    padding: 8px 14px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--accent4);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+  }
+
+  .er-table-header .logical {
+    font-size: 10px;
+    color: var(--text3);
+    font-weight: 400;
+  }
+
+  .er-field {
+    padding: 6px 14px;
+    border-top: 1px solid rgba(255,255,255,0.04);
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11.5px;
+    color: var(--text2);
+  }
+
+  .er-field .field-name { flex: 1; }
+
+  .er-field .field-type {
+    font-size: 10px;
+    color: var(--text3);
+  }
+
+  /* ─── FOOTER ─── */
+  footer {
+    position: relative;
+    z-index: 1;
+    border-top: 1px solid var(--border);
+    padding: 24px 40px;
+    text-align: center;
+    font-family: 'JetBrains Mono', monospace;
+    font-size: 11px;
+    color: var(--text3);
+  }
+
+  .tag { color: var(--accent2); }
+</style>
+</head>
+<body>
+<div class="grid-bg"></div>
+
+<!-- HEADER -->
+<header>
+  <div>
+    <div class="header-badge">DETAILED DESIGN DOCUMENT — v1.0</div>
+    <h1>【<span>SDGsシステム</span>】<br>詳細設計書</h1>
+  </div>
+  <div class="header-meta">
+    <div class="group">グループ C</div>
+    <div class="subtitle">2024 / SYSTEM ARCHITECTURE</div>
+  </div>
+</header>
+
+<!-- NAV -->
+<nav>
+  <a href="#hw">1. HW構成</a>
+  <a href="#port">2. ポート割当</a>
+  <a href="#parts">4. 部品表</a>
+  <a href="#programs">8. プログラム</a>
+  <a href="#db">10. データベース</a>
+</nav>
+
+<main>
+
+  <!-- SUMMARY -->
+  <div class="summary-grid" style="margin-top:32px;">
+    <div class="summary-card" style="--accent-color: var(--accent1);">
+      <div class="icon">🔌</div>
+      <div class="label">Hardware</div>
+      <div class="value">5</div>
+      <div class="sub">接続部品数</div>
+    </div>
+    <div class="summary-card" style="--accent-color: var(--accent2);">
+      <div class="icon">📁</div>
+      <div class="label">Program Files</div>
+      <div class="value">14</div>
+      <div class="sub">ファイル総数</div>
+    </div>
+    <div class="summary-card" style="--accent-color: var(--accent4);">
+      <div class="icon">🗄️</div>
+      <div class="label">DB Tables</div>
+      <div class="value">6</div>
+      <div class="sub">テーブル数</div>
+    </div>
+    <div class="summary-card" style="--accent-color: var(--accent3);">
+      <div class="icon">📱</div>
+      <div class="label">Platforms</div>
+      <div class="value">3</div>
+      <div class="sub">Web / Android / IoT</div>
+    </div>
+  </div>
+
+  <!-- 1. HW OVERVIEW -->
+  <section id="hw">
+    <div class="section-header">
+      <span class="section-num">SECTION 01</span>
+      <h2>ハードウェア全体構成</h2>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr>
+          <th class="col-filename">マイコンボード</th>
+          <th>役割</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td>Arduino UNO R4 WiFi</td>
+            <td>温湿度・照度を計測し、1分単位でサーバへ送信するメインコントローラ</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 2. PORT TABLE -->
+  <section id="port">
+    <div class="section-header">
+      <span class="section-num">SECTION 02</span>
+      <h2>ポート割当て表</h2>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr>
+          <th>部品</th>
+          <th>ポート</th>
+        </tr></thead>
+        <tbody>
+          <tr><td>DHT11 / NJL75020L / OLED</td><td><span class="port-badge">GND</span></td></tr>
+          <tr><td>DHT11 / NJL75020L / OLED</td><td><span class="port-badge">5V</span></td></tr>
+          <tr><td>温湿度センサー モジュール DHT11</td><td><span class="port-badge">D2</span></td></tr>
+          <tr><td>照度センサー（フォトトランジスタ）560nm NJL75020L</td><td><span class="port-badge">A0</span></td></tr>
+          <tr><td>0.96インチ 128×64ドット 有機ELディスプレイ（OLED）</td><td><span class="port-badge">D18 / D19</span></td></tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 4. PARTS TABLE -->
+  <section id="parts">
+    <div class="section-header">
+      <span class="section-num">SECTION 04</span>
+      <h2>部品表</h2>
+    </div>
+    <div class="card">
+      <table>
+        <thead><tr>
+          <th>部品名</th>
+          <th>型番</th>
+          <th style="text-align:center;">個数</th>
+        </tr></thead>
+        <tbody>
+          <tr>
+            <td>照度センサー（フォトトランジスタ）</td>
+            <td style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text2);">NJL7502L</td>
+            <td style="text-align:center;"><span class="count-badge">×1</span></td>
+          </tr>
+          <tr>
+            <td>0.96インチ 128×64ドット 有機ELディスプレイ（OLED）白色</td>
+            <td style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text2);">SSD1306</td>
+            <td style="text-align:center;"><span class="count-badge">×1</span></td>
+          </tr>
+          <tr>
+            <td>温湿度センサー モジュール DHT11</td>
+            <td style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text2);">DHT11</td>
+            <td style="text-align:center;"><span class="count-badge">×1</span></td>
+          </tr>
+          <tr>
+            <td>Arduino UNO R4 WiFi</td>
+            <td style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text2);">ABX00087</td>
+            <td style="text-align:center;"><span class="count-badge">×1</span></td>
+          </tr>
+          <tr>
+            <td>カーボン抵抗（炭素皮膜抵抗）1/4W 10kΩ</td>
+            <td style="font-family:'JetBrains Mono',monospace; font-size:12px; color:var(--text2);">RD25S 10K</td>
+            <td style="text-align:center;"><span class="count-badge">×2</span></td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </section>
+
+  <!-- 8. PROGRAMS -->
+  <section id="programs">
+    <div class="section-header">
+      <span class="section-num">SECTION 08</span>
+      <h2>主なプログラム・関数</h2>
+    </div>
+
+    <!-- (1) IoT -->
+    <div style="margin-bottom:28px;">
+      <h3>（1）IoT機器　— Arduino UNO R4</h3>
+      <div class="card">
+        <table>
+          <thead><tr>
+            <th class="col-filename">ファイル名</th>
+            <th class="col-action">動作</th>
+            <th>関数</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td>iot.ino</td>
+              <td>温湿度・照度を計測し、1分単位でサーバに送る</td>
+              <td>
+                <div class="func-list">
+                  <div class="func-item">
+                    <div class="func-name">sendToServer()</div>
+                    <div class="func-desc">測定したデータをサーバに送る</div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- (2) Web Server -->
+    <div style="margin-bottom:28px;">
+      <h3>（2）Webサーバ</h3>
+      <div class="card">
+        <table>
+          <thead><tr>
+            <th class="col-filename">ファイル名</th>
+            <th class="col-action">動作</th>
+            <th>関数</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td>get_env.php</td>
+              <td>温度・湿度・照度・時刻をデータベースに保存</td>
+              <td style="color:var(--text3); font-size:12px;">—</td>
+            </tr>
+            <tr>
+              <td>login_check.php</td>
+              <td>学籍番号とパスワードがDBと一致するか確認</td>
+              <td style="color:var(--text3); font-size:12px;">—</td>
+            </tr>
+            <tr>
+              <td>signup.php</td>
+              <td>新しい学生ユーザーの情報を登録</td>
+              <td style="color:var(--text3); font-size:12px;">—</td>
+            </tr>
+            <tr>
+              <td>tablet.php</td>
+              <td>出席データをDBへ登録（2回目以降はしない）、DBから出席状況を読み取りアプリへ返す、特定の時間での出欠判定と出欠登録</td>
+              <td style="color:var(--text3); font-size:12px;">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- (3) Web Page -->
+    <div style="margin-bottom:28px;">
+      <h3>（3）Webページ</h3>
+      <div class="card">
+        <table>
+          <thead><tr>
+            <th class="col-filename">ファイル名</th>
+            <th class="col-action">動作</th>
+            <th>関数</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td>index.php</td>
+              <td>TOPページ。各教室の現在の環境状況を表示。env.php・teacher.phpへ遷移。</td>
+              <td>
+                <div class="func-list">
+                  <div class="func-item">
+                    <div class="func-name">getLatestData()</div>
+                    <div class="func-desc">DBから各教室の最新データを取得し環境状況を判定</div>
+                  </div>
+                  <div class="func-item">
+                    <div class="func-name">updateData()</div>
+                    <div class="func-desc">最新情報を取得し、画面上の数字や画像を書き換える</div>
+                  </div>
+                  <div class="func-item">
+                    <div class="func-name">calculateEcoRate()</div>
+                    <div class="func-desc">照明OFF時の暖房消し忘れ割合を計算</div>
+                  </div>
+                  <div class="func-item">
+                    <div class="func-name">openModal(id) / closeModal()</div>
+                    <div class="func-desc">各部屋クリック時にモーダル（詳細画面）を開閉</div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>env.php</td>
+              <td>環境状況閲覧ページ。各教室の過去の環境状況を閲覧できる。</td>
+              <td>
+                <div class="func-list">
+                  <div class="func-item">
+                    <div class="func-name">drawChart()</div>
+                    <div class="func-desc">モーダルに表示する週間グラフを描画</div>
+                  </div>
+                  <div class="func-item">
+                    <div class="func-name">openModal() / closeModal()</div>
+                    <div class="func-desc">1週間表示ボタンクリック時にモーダルを開閉</div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>teacher.php</td>
+              <td>教員用ログインページ</td>
+              <td style="color:var(--text3); font-size:12px;">—</td>
+            </tr>
+            <tr>
+              <td>attend.php</td>
+              <td>出席管理ページ</td>
+              <td>
+                <div class="func-list">
+                  <div class="func-item">
+                    <div class="func-name">toggleAttendance(id)</div>
+                    <div class="func-desc">各授業の出席リストを開閉する</div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>sinki_toriku.php</td>
+              <td>新規登録ページ</td>
+              <td style="color:var(--text3); font-size:12px;">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+
+    <!-- (4) Android Teacher -->
+    <div style="margin-bottom:28px;">
+      <h3>（4）Android（教員用端末）</h3>
+      <div class="card">
+        <table>
+          <thead><tr>
+            <th class="col-filename">ファイル名</th>
+            <th class="col-action">動作</th>
+            <th>関数</th>
+          </tr></thead>
+          <tbody>
+            <tr>
+              <td>AndroidManifest.xml</td>
+              <td>カメラ・インターネット通信の使用権限付与、カメラ機能宣言、MainActivityの画面登録と起動</td>
+              <td style="color:var(--text3); font-size:12px;">—</td>
+            </tr>
+            <tr>
+              <td>MainActivity.java</td>
+              <td>科目選択・日付選択、QR読み取りから出席登録、出席一覧の取得・表示、カメラの停止・開始・権限チェック</td>
+              <td>
+                <div class="func-list">
+                  <div class="func-item">
+                    <div class="func-name">makeCell(String text, float weight)</div>
+                    <div class="func-desc">新しいTextViewセルを作成しサイズ等を設定</div>
+                  </div>
+                  <div class="func-item">
+                    <div class="func-name">convertSubjectId(String subject)</div>
+                    <div class="func-desc">科目名から番号を抽出しIDに変換（エラー時は0を返す）</div>
+                  </div>
+                  <div class="func-item">
+                    <div class="func-name">updateRightAttendanceView(int subjectId, String date)</div>
+                    <div class="func-desc">URLを生成してサーバから出席データを取得し、表を再構築。ステータスに応じて背景色を設定。</div>
+                  </div>
+                </div>
+              </td>
+            </tr>
+            <tr>
+              <td>cell_border.xml</td>
+              <td>出席表の枠線表示</td>
+              <td style="color:var(--text3); font-size:12px;">—</td>
+            </tr>
+            <tr>
+              <td>activity_main.xml</td>
+              <td>MainActivity.java のレイアウト定義</td>
+              <td style="color:var(--text3); font-size:12px;">—</td>
+            </tr>
+            <tr>
+              <td>build.gradle</td>
+              <td>アプリ本体の設定管理</td>
+              <td style="color:var(--text3); font-size:12px;">—</td>
+            </tr>
+            <tr>
+              <td>themes.xml</td>
+              <td>色・デザインの設定</td>
+              <td style="color:var(--text3); font-size:12px;">—</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- 10. DATABASE -->
+  <section id="db">
+    <div class="section-header">
+      <span class="section-num">SECTION 10</span>
+      <h2>データベース（E-R 図）</h2>
+    </div>
+
+    <!-- ER Diagram Visual -->
+    <div class="er-container" style="margin-bottom:32px;">
+      <div class="er-diagram">
+
+        <!-- GROUP: マスター系 -->
+        <div class="er-group">
+          <div class="er-group-label">▸ マスター系</div>
+
+          <div>
+            <div class="db-table-name">t_department <span class="db-logical">学科マスタ</span></div>
+            <div class="er-table" style="border-radius:0 8px 8px 8px;">
+              <div class="er-field">
+                <span class="badge-pk">PK</span>
+                <span class="field-name">dept_id</span>
+                <span class="field-type">serial</span>
+              </div>
+              <div class="er-field">
+                <span style="width:32px;"></span>
+                <span class="field-name">dept_name</span>
+                <span class="field-type">varchar</span>
+              </div>
+            </div>
+          </div>
+
+          <div>
+            <div class="db-table-name">t_room <span class="db-logical">教室マスタ</span></div>
+            <div class="er-table" style="border-radius:0 8px 8px 8px;">
+              <div class="er-field">
+                <span class="badge-pk">PK</span>
+                <span class="field-name">room_id</span>
+                <span class="field-type">serial</span>
+              </div>
+              <div class="er-field">
+                <span style="width:32px;"></span>
+                <span class="field-name">room_name</span>
+                <span class="field-type">varchar</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GROUP: ユーザー系 -->
+        <div class="er-group">
+          <div class="er-group-label">▸ ユーザー系</div>
+
+          <div>
+            <div class="db-table-name">t_student <span class="db-logical">学生マスタ</span></div>
+            <div class="er-table" style="border-radius:0 8px 8px 8px;">
+              <div class="er-field"><span class="badge-pk">PK</span><span class="field-name">student_id</span><span class="field-type">varchar</span></div>
+              <div class="er-field"><span style="width:32px;"></span><span class="field-name">password</span><span class="field-type">varchar</span></div>
+              <div class="er-field"><span style="width:32px;"></span><span class="field-name">student_name</span><span class="field-type">varchar</span></div>
+              <div class="er-field"><span class="badge-fk">FK</span><span class="field-name">dept_id</span><span class="field-type">int</span></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="db-table-name">t_teacher <span class="db-logical">教師マスタ</span></div>
+            <div class="er-table" style="border-radius:0 8px 8px 8px;">
+              <div class="er-field"><span class="badge-pk">PK</span><span class="field-name">teacher_id</span><span class="field-type">varchar</span></div>
+              <div class="er-field"><span style="width:32px;"></span><span class="field-name">password</span><span class="field-type">varchar</span></div>
+              <div class="er-field"><span style="width:32px;"></span><span class="field-name">teacher_name</span><span class="field-type">varchar</span></div>
+              <div class="er-field"><span class="badge-fk">FK</span><span class="field-name">dept_id</span><span class="field-type">int</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GROUP: 授業・出欠 -->
+        <div class="er-group">
+          <div class="er-group-label">▸ 授業・出欠管理</div>
+
+          <div>
+            <div class="db-table-name">t_subject <span class="db-logical">授業マスタ</span></div>
+            <div class="er-table" style="border-radius:0 8px 8px 8px;">
+              <div class="er-field"><span class="badge-pk">PK</span><span class="field-name">subject_id</span><span class="field-type">serial</span></div>
+              <div class="er-field"><span style="width:32px;"></span><span class="field-name">subject_name</span><span class="field-type">varchar</span></div>
+              <div class="er-field"><span class="badge-fk">FK</span><span class="field-name">dept_id</span><span class="field-type">int</span></div>
+            </div>
+          </div>
+
+          <div>
+            <div class="db-table-name">t_attendance <span class="db-logical">出席記録</span></div>
+            <div class="er-table" style="border-radius:0 8px 8px 8px;">
+              <div class="er-field"><span class="badge-pk">PK</span><span class="field-name">add_id</span><span class="field-type">serial</span></div>
+              <div class="er-field"><span class="badge-fk">FK</span><span class="field-name">student_id</span><span class="field-type">varchar</span></div>
+              <div class="er-field"><span class="badge-fk">FK</span><span class="field-name">subject_id</span><span class="field-type">int</span></div>
+              <div class="er-field"><span style="width:32px;"></span><span class="field-name">add_type</span><span class="field-type">int (1:入室 / 2:退室)</span></div>
+              <div class="er-field"><span style="width:32px;"></span><span class="field-name">created_at</span><span class="field-type">timestamp</span></div>
+            </div>
+          </div>
+        </div>
+
+        <!-- GROUP: 環境 -->
+        <div class="er-group">
+          <div class="er-group-label">▸ 環境モニタリング</div>
+
+          <div>
+            <div class="db-table-name">t_environment <span class="db-logical">環境データ</span></div>
+            <div class="er-table" style="border-radius:0 8px 8px 8px;">
+              <div class="er-field"><span class="badge-pk">PK</span><span class="field-name">data_id</span><span class="field-type">serial</span></div>
+              <div class="er-field"><span class="badge-fk">FK</span><span class="field-name">room_id</span><span class="field-type">int</span></div>
+              <div class="er-field"><span style="width:32px;"></span><span class="field-name">temp</span><span class="field-type">int（℃）</span></div>
+              <div class="er-field"><span style="width:32px;"></span><span class="field-name">humi</span><span class="field-type">int（%）</span></div>
+              <div class="er-field"><span style="width:32px;"></span><span class="field-name">lux</span><span class="field-type">int（lx）</span></div>
+              <div class="er-field"><span style="width:32px;"></span><span class="field-name">created_at</span><span class="field-type">timestamp</span></div>
+            </div>
+          </div>
+        </div>
+
+      </div><!-- /er-diagram -->
+
+      <!-- Legend -->
+      <div style="margin-top:24px; display:flex; gap:20px; flex-wrap:wrap; border-top:1px solid var(--border); padding-top:16px;">
+        <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text3);">
+          <span class="badge-pk">PK</span> 主キー（Primary Key）
+        </div>
+        <div style="display:flex; align-items:center; gap:8px; font-size:12px; color:var(--text3);">
+          <span class="badge-fk">FK</span> 外部キー（Foreign Key）
+        </div>
+      </div>
+    </div>
+
+    <!-- DB Detail Tables -->
+    <h3>テーブル詳細</h3>
+    <div class="grid-2">
+
+      <!-- t_department -->
+      <div>
+        <div class="db-table-name">t_department <span class="db-logical">学科管理（マスター）</span></div>
+        <div class="db-card">
+          <table>
+            <thead><tr><th>項目名（型）</th><th>役割・制約</th></tr></thead>
+            <tbody>
+              <tr><td>dept_id (serial)</td><td><span class="badge-pk">PK</span> 学科固有ID</td></tr>
+              <tr><td>dept_name (varchar)</td><td>学科名</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- t_room -->
+      <div>
+        <div class="db-table-name">t_room <span class="db-logical">教室マスタ</span></div>
+        <div class="db-card">
+          <table>
+            <thead><tr><th>項目名（型）</th><th>役割・制約</th></tr></thead>
+            <tbody>
+              <tr><td>room_id (serial)</td><td><span class="badge-pk">PK</span> 教室固有ID</td></tr>
+              <tr><td>room_name (varchar)</td><td>教室名</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- t_student -->
+      <div>
+        <div class="db-table-name">t_student <span class="db-logical">学生マスタ</span></div>
+        <div class="db-card">
+          <table>
+            <thead><tr><th>項目名（型）</th><th>役割・制約</th></tr></thead>
+            <tbody>
+              <tr><td>student_id (varchar)</td><td><span class="badge-pk">PK</span> 学籍番号</td></tr>
+              <tr><td>password (varchar)</td><td>ハッシュ化パスワード</td></tr>
+              <tr><td>student_name (varchar)</td><td>学生氏名</td></tr>
+              <tr><td>dept_id (int)</td><td><span class="badge-fk">FK</span> 学科固有ID</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- t_teacher -->
+      <div>
+        <div class="db-table-name">t_teacher <span class="db-logical">教師マスタ</span></div>
+        <div class="db-card">
+          <table>
+            <thead><tr><th>項目名（型）</th><th>役割・制約</th></tr></thead>
+            <tbody>
+              <tr><td>teacher_id (varchar)</td><td><span class="badge-pk">PK</span> 教師ID</td></tr>
+              <tr><td>password (varchar)</td><td>ハッシュ化パスワード</td></tr>
+              <tr><td>teacher_name (varchar)</td><td>教師氏名</td></tr>
+              <tr><td>dept_id (int)</td><td><span class="badge-fk">FK</span> 学科固有ID</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- t_subject -->
+      <div>
+        <div class="db-table-name">t_subject <span class="db-logical">授業マスタ</span></div>
+        <div class="db-card">
+          <table>
+            <thead><tr><th>項目名（型）</th><th>役割・制約</th></tr></thead>
+            <tbody>
+              <tr><td>subject_id (serial)</td><td><span class="badge-pk">PK</span> 授業固有ID</td></tr>
+              <tr><td>subject_name (varchar)</td><td>授業名</td></tr>
+              <tr><td>dept_id (int)</td><td><span class="badge-fk">FK</span> 学科固有ID</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- t_attendance -->
+      <div>
+        <div class="db-table-name">t_attendance <span class="db-logical">出席記録</span></div>
+        <div class="db-card">
+          <table>
+            <thead><tr><th>項目名（型）</th><th>役割・制約</th></tr></thead>
+            <tbody>
+              <tr><td>add_id (serial)</td><td><span class="badge-pk">PK</span> 出席打刻連番</td></tr>
+              <tr><td>student_id (varchar)</td><td><span class="badge-fk">FK</span> t_student 参照</td></tr>
+              <tr><td>subject_id (int)</td><td><span class="badge-fk">FK</span> t_subject 参照</td></tr>
+              <tr><td>add_type (int)</td><td>1：入室 ／ 2：退室</td></tr>
+              <tr><td>created_at</td><td>打刻時間</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- t_environment -->
+      <div style="grid-column: 1 / -1;">
+        <div class="db-table-name">t_environment <span class="db-logical">環境モニタリングデータ</span></div>
+        <div class="db-card">
+          <table>
+            <thead><tr><th>項目名（型）</th><th>役割・制約</th></tr></thead>
+            <tbody>
+              <tr><td>data_id (serial)</td><td><span class="badge-pk">PK</span> データ連番</td></tr>
+              <tr><td>room_id (int)</td><td><span class="badge-fk">FK</span> t_room 参照</td></tr>
+              <tr><td>temp (int)</td><td>測定温度（℃）</td></tr>
+              <tr><td>humi (int)</td><td>測定湿度（%）</td></tr>
+              <tr><td>lux (int)</td><td>測定照度（lx）</td></tr>
+              <tr><td>created_at</td><td>計測日時</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+    </div><!-- /grid-2 -->
+  </section>
+
+</main>
+
+<footer>
+  <span class="tag">&lt;</span>SDGsシステム 詳細設計書 — グループ C<span class="tag">&gt;</span>
+  &nbsp;·&nbsp; 2024 System Architecture Documentation
+</footer>
+
+</body>
+</html>
